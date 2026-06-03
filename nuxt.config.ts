@@ -42,6 +42,19 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    wxAppId: '',
+    wxAppSecret: '',
+    wxToken: '',
+    jwtSecret: '',
+  },
+
+  nitro: {
+    experimental: {
+      openAPI: false,
+    },
+  },
+
   app: {
     head: {
       title: '在线简历编辑器',
