@@ -19,6 +19,8 @@
     "@codemirror/state": "^6.5.0",
     "@codemirror/theme-one-dark": "^6.1.0",
     "@codemirror/view": "^6.35.0",
-    "@nuxtjs/mdc": "^0.22.0"
+    "@nuxtjs/mdc": "^0.22.0",
+    "html2canvas": "^1.4.1",
+    "jose": "^6.2.3"
   }
 }
