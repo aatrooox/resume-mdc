@@ -6,7 +6,7 @@ const props = defineProps<{
 }>()
 
 const tags = computed(() =>
-  props.items.split(',').map(s => s.trim()).filter(Boolean)
+  [...new Set((props.items ?? '').split(',').map(s => s.trim()).filter(Boolean))]
 )
 </script>
 

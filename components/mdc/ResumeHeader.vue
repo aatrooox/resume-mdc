@@ -1,10 +1,9 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   name: string
   title: string
   email?: string
   phone?: string
-  avatar?: string
 }>()
 </script>
 
