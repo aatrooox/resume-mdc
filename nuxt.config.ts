@@ -1,4 +1,3 @@
-// nuxt.config.ts
 export default defineNuxtConfig({
   modules: ['@nuxtjs/mdc', '@nuxtjs/tailwindcss'],
 
@@ -22,10 +21,6 @@ export default defineNuxtConfig({
 
   tailwindcss: {
     config: {
-      content: [
-        './components/**/*.{vue,js,ts}',
-        './pages/**/*.{vue,js,ts}',
-      ],
       theme: {
         extend: {
           colors: {
@@ -41,15 +36,6 @@ export default defineNuxtConfig({
           },
           fontSize: {
             'body': ['16px', { lineHeight: '1.6' }],
-          },
-          spacing: {
-            '1': '4px',
-            '2': '8px',
-            '3': '12px',
-            '4': '16px',
-            '6': '24px',
-            '8': '32px',
-            '12': '48px',
           },
         },
       },
