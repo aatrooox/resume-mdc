@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v0.0.3
+
+
+### 🩹 Fixes
+
+- PDF export now captures editor pages directly, eliminates print page re-render (6e8714d)
+
+### ❤️ Contributors
+
+- Aatrox3 ([@aatrooox](https://github.com/aatrooox))
+
 ## v0.0.2
 
 
