@@ -1,7 +1,13 @@
 import pkg from './package.json'
 
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/mdc', '@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/mdc', '@nuxtjs/tailwindcss', 'nuxt-umami'],
+
+  umami: {
+    autoTrack: true,
+    id: process.env.NUXT_PUBLIC_UMAMI_WEBSITE_ID || 'fecf5d54-a1fd-4abe-8ab6-f15483a16f03',
+    host: process.env.NUXT_PUBLIC_UMAMI_HOST || 'https://umami.nezus.cn',
+  },
 
   mdc: {
     components: {
