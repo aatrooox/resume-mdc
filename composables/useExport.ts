@@ -13,15 +13,16 @@ export const useExport = () => {
   const downloadMD = (content: string, filename: string) => {
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
     triggerDownload(blob, `${filename}.md`)
+    return { success: true }
   }
 
   const downloadPDF = (content: string) => {
     localStorage.setItem('print_content', content)
-    const win = window.open('/print', '_blank')
-    // Note: print is auto-triggered by the /print page on mount
+    window.open('/print', '_blank')
+    return { success: true }
   }
 
-  const downloadPNG = async (element: HTMLElement, filename: string) => {
+  const downloadPNG = async (element: HTMLElement, filename: string): Promise<{ success: boolean; error?: string }> => {
     // Remove measurement containers so html2canvas doesn't capture them
     const measures = element.querySelectorAll('.measure-container')
     measures.forEach((el) => (el as HTMLElement).style.display = 'none')
@@ -33,11 +34,20 @@ export const useExport = () => {
         useCORS: true,
         backgroundColor: '#FFFFFF',
       })
-      canvas.toBlob((blob) => {
-        if (blob) triggerDownload(blob, filename)
-      }, 'image/png')
-    } catch (err) {
+
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            triggerDownload(blob, filename)
+            resolve({ success: true })
+          } else {
+            resolve({ success: false, error: '图片生成失败，可能存在跨域资源导致画布被污染' })
+          }
+        }, 'image/png')
+      })
+    } catch (err: any) {
       console.error('PNG export failed:', err)
+      return { success: false, error: err.message || '导出失败，请重试' }
     } finally {
       measures.forEach((el) => (el as HTMLElement).style.display = '')
     }

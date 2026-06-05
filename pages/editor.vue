@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const { source, currentTemplate, loadTemplate, updateSource } = useEditor()
-const { user, isLoggedIn, login, logout } = useAuth()
+const { user, isLoggedIn, loading, login, logout } = useAuth()
 const { downloadMD, downloadPDF, downloadPNG } = useExport()
+const { show: toast } = useToast()
 
 // Load template from query param or default
 const route = useRoute()
@@ -20,22 +21,25 @@ const handleSelectTemplate = (name: string) => {
 
 const handleExportPDF = () => {
   downloadPDF(source.value)
+  toast('正在准备打印，请在弹出的打印窗口中完成导出', 'info')
 }
 
 const handleExportPNG = async () => {
   if (!previewRef.value) {
-    console.error('Preview element not found for PNG export')
+    toast('预览区域未就绪，请稍后再试', 'error')
     return
   }
-  try {
-    await downloadPNG(previewRef.value, 'resume.png')
-  } catch (err) {
-    console.error('PNG export failed:', err)
+  const result = await downloadPNG(previewRef.value, 'resume.png')
+  if (result.success) {
+    toast('PNG 导出成功', 'success')
+  } else {
+    toast(result.error || 'PNG 导出失败', 'error')
   }
 }
 
 const handleExportMD = () => {
   downloadMD(source.value, 'resume')
+  toast('Markdown 导出成功', 'success')
 }
 </script>
 
@@ -44,6 +48,7 @@ const handleExportMD = () => {
     <EditorToolbar
       :current-template="currentTemplate"
       :is-logged-in="isLoggedIn"
+      :loading="loading"
       :user="user"
       @select-template="handleSelectTemplate"
       @export-md="handleExportMD"

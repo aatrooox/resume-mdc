@@ -9,6 +9,7 @@ interface User {
 const props = defineProps<{
   currentTemplate: string
   isLoggedIn: boolean
+  loading: boolean
   user: User | null
 }>()
 
@@ -32,9 +33,11 @@ const showExportTip = ref(false)
 const showUserMenu = ref(false)
 
 const onExportClick = (type: string) => {
+  if (props.loading) return
+
   if (!props.isLoggedIn) {
     showExportTip.value = true
-    setTimeout(() => showExportTip.value = false, 3000)
+    setTimeout(() => showExportTip.value = false, 5000)
     return
   }
   if (type === 'md') emit('export-md')
@@ -70,19 +73,31 @@ const onExportClick = (type: string) => {
       <span class="text-[11px] text-foreground/30 uppercase tracking-wider mr-1 hidden md:inline">导出</span>
       <button
         @click="onExportClick('md')"
-        class="text-[12px] px-2 md:px-3 py-1.5 border border-border hover:bg-surface transition-colors font-medium"
+        :disabled="loading"
+        :class="[
+          'text-[12px] px-2 md:px-3 py-1.5 border transition-colors font-medium',
+          loading ? 'border-border text-foreground/20 cursor-not-allowed' : 'border-border hover:bg-surface'
+        ]"
       >
         MD
       </button>
       <button
         @click="onExportClick('pdf')"
-        class="text-[12px] px-2 md:px-3 py-1.5 border border-border hover:bg-surface transition-colors font-medium"
+        :disabled="loading"
+        :class="[
+          'text-[12px] px-2 md:px-3 py-1.5 border transition-colors font-medium',
+          loading ? 'border-border text-foreground/20 cursor-not-allowed' : 'border-border hover:bg-surface'
+        ]"
       >
         PDF
       </button>
       <button
         @click="onExportClick('png')"
-        class="text-[12px] px-2 md:px-3 py-1.5 border border-border hover:bg-surface transition-colors font-medium"
+        :disabled="loading"
+        :class="[
+          'text-[12px] px-2 md:px-3 py-1.5 border transition-colors font-medium',
+          loading ? 'border-border text-foreground/20 cursor-not-allowed' : 'border-border hover:bg-surface'
+        ]"
       >
         PNG
       </button>
