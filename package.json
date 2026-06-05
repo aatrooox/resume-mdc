@@ -5,10 +5,14 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "release:patch": "changelogen --release --patch",
+    "release:minor": "changelogen --release --minor",
+    "release:major": "changelogen --release --major"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.13.0",
+    "changelogen": "^0.6.2",
     "nuxt": "^4.0.0",
     "typescript": "^5.6.0"
   },
@@ -22,5 +26,6 @@
     "@nuxtjs/mdc": "^0.22.0",
     "html2canvas": "^1.4.1",
     "jose": "^6.2.3"
-  }
+  },
+  "version": "0.0.1"
 }
