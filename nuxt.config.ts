@@ -42,11 +42,19 @@ export default defineNuxtConfig({
     },
   },
 
+  components: {
+    dirs: [
+      { path: '~/components/editor', pathPrefix: false },
+      { path: '~/components/mdc', pathPrefix: false },
+    ],
+  },
+
   runtimeConfig: {
-    wxAppId: '',
-    wxAppSecret: '',
-    wxToken: '',
-    jwtSecret: '',
+    jwtSecret: process.env.NUXT_JWT_SECRET || '',
+  },
+
+  devServer: {
+    port: 4777,
   },
 
   nitro: {

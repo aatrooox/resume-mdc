@@ -1,24 +1,33 @@
+import { getQuery, setCookie, sendRedirect } from 'h3'
+import { getNezusOAuthConfig, exchangeCodeForToken, fetchNezusUserInfo } from '~~/server/utils/oauth-client'
+import { createSession } from '~~/server/utils/session'
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const code = query.code as string
-  const state = query.state as string
+  const code = String(query.code || '')
 
   if (!code) {
-    throw createError({ statusCode: 400, message: 'Missing code' })
+    return sendRedirect(event, '/editor?error=no_code')
   }
 
-  const { access_token, openid } = await getWxAccessToken(code)
-  const user = await getWxUserInfo(access_token, openid)
-  const token = await createJWT(user)
+  const config = getNezusOAuthConfig()
 
-  const redirect = state ? Buffer.from(state, 'base64').toString('utf-8') : '/editor'
+  try {
+    const tokenResp = await exchangeCodeForToken(config, code)
+    const userInfo = await fetchNezusUserInfo(config, tokenResp.access_token)
 
-  setCookie(event, 'auth_token', token, {
-    httpOnly: true,
-    maxAge: 7 * 24 * 3600,
-    path: '/',
-    sameSite: 'lax',
-  })
+    const token = await createSession(userInfo)
 
-  await sendRedirect(event, redirect)
+    setCookie(event, 'auth_token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 3600,
+      path: '/',
+      sameSite: 'lax',
+    })
+
+    return sendRedirect(event, '/editor')
+  } catch (err) {
+    console.error('[auth:callback]', err)
+    return sendRedirect(event, '/editor?error=oauth_failed')
+  }
 })

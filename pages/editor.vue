@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { source, currentTemplate, loadTemplate, updateSource } = useEditor()
-const { isLoggedIn, login } = useAuth()
+const { user, isLoggedIn, login, logout } = useAuth()
 const { downloadMD, downloadPDF, downloadPNG } = useExport()
 
 // Load template from query param or default
@@ -23,8 +23,14 @@ const handleExportPDF = () => {
 }
 
 const handleExportPNG = async () => {
-  if (previewRef.value) {
+  if (!previewRef.value) {
+    console.error('Preview element not found for PNG export')
+    return
+  }
+  try {
     await downloadPNG(previewRef.value, 'resume.png')
+  } catch (err) {
+    console.error('PNG export failed:', err)
   }
 }
 
@@ -38,26 +44,29 @@ const handleExportMD = () => {
     <EditorToolbar
       :current-template="currentTemplate"
       :is-logged-in="isLoggedIn"
+      :user="user"
       @select-template="handleSelectTemplate"
       @export-md="handleExportMD"
       @export-pdf="handleExportPDF"
       @export-png="handleExportPNG"
       @login="login"
+      @logout="logout"
     />
 
-    <div class="flex flex-1 overflow-hidden">
-      <div class="w-[35%] min-w-[380px] border-r border-border overflow-hidden">
+    <div class="flex flex-1 overflow-hidden flex-col md:flex-row">
+      <div class="md:w-[35%] md:min-w-[380px] border-b md:border-b-0 md:border-r border-border h-[45%] md:h-full overflow-hidden">
         <MdEditor
           :model-value="source"
           @update:model-value="updateSource"
         />
       </div>
 
-      <div class="flex-1 bg-muted overflow-auto p-6 flex justify-center">
+      <div class="flex-1 bg-muted overflow-auto p-4 md:p-6 flex justify-center">
         <div ref="previewRef">
           <ResumePreview :content="source" />
         </div>
       </div>
     </div>
+
   </div>
 </template>

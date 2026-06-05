@@ -22,15 +22,25 @@ export const useExport = () => {
   }
 
   const downloadPNG = async (element: HTMLElement, filename: string) => {
-    const { default: html2canvas } = await import('html2canvas')
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#FFFFFF',
-    })
-    canvas.toBlob((blob) => {
-      if (blob) triggerDownload(blob, filename)
-    }, 'image/png')
+    // Remove measurement containers so html2canvas doesn't capture them
+    const measures = element.querySelectorAll('.measure-container')
+    measures.forEach((el) => (el as HTMLElement).style.display = 'none')
+
+    try {
+      const { default: html2canvas } = await import('html2canvas')
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#FFFFFF',
+      })
+      canvas.toBlob((blob) => {
+        if (blob) triggerDownload(blob, filename)
+      }, 'image/png')
+    } catch (err) {
+      console.error('PNG export failed:', err)
+    } finally {
+      measures.forEach((el) => (el as HTMLElement).style.display = '')
+    }
   }
 
   return { downloadMD, downloadPDF, downloadPNG }
