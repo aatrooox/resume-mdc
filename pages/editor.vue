@@ -19,9 +19,16 @@ const handleSelectTemplate = (name: string) => {
   loadTemplate(name)
 }
 
-const handleExportPDF = () => {
-  downloadPDF(source.value)
-  toast('正在准备打印，请在弹出的打印窗口中完成导出', 'info')
+const handleExportPDF = async () => {
+  if (!previewRef.value) {
+    toast('预览区域未就绪，请稍后再试', 'error')
+    return
+  }
+  toast('正在生成PDF，请在弹出的打印窗口中完成导出', 'info')
+  const result = await downloadPDF(previewRef.value)
+  if (!result.success) {
+    toast(result.error || 'PDF 导出失败', 'error')
+  }
 }
 
 const handleExportPNG = async () => {
