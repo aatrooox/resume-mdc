@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v0.0.4
+
+
+### 🩹 Fixes
+
+- Enforce A4 aspect ratio on all PDF print pages (11af5be)
+
+### ❤️ Contributors
+
+- Aatrox3 ([@aatrooox](https://github.com/aatrooox))
+
 ## v0.0.3
 
 
