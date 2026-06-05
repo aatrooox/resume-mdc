@@ -28,5 +28,5 @@
     "html2canvas": "^1.4.1",
     "jose": "^6.2.3"
   },
-  "version": "0.0.5"
+  "version": "0.1.0"
 }

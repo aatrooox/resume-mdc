@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v0.1.0
+
+
+### 🚀 Enhancements
+
+- Snapdom-based export, pagination fixes, per-page PNG, version display (575457f)
+
+### ❤️ Contributors
+
+- Aatrox3 ([@aatrooox](https://github.com/aatrooox))
+
 ## v0.0.5
 
 
