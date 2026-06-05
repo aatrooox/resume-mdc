@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { parseMarkdown } from '@nuxtjs/mdc/runtime'
-
 const props = defineProps<{ content: string }>()
 
 const source = computed(() => props.content)
@@ -27,30 +25,15 @@ const showMeasure = computed(() => measuring.value && fullBody.value)
         v-for="page in pages"
         :key="page.number"
         class="resume-page bg-white w-[794px] max-w-full p-8 md:p-12"
-        style="box-shadow: 0 0 0 1px #E4E7EB;"
+        style="box-shadow: 0 0 0 1px #E4E7EB; aspect-ratio: 794 / 1123; overflow: hidden;"
       >
         <article>
-          <template v-for="entry in page.entries" :key="entry.key">
-            <!-- Clipped top portion -->
-            <div v-if="entry.clip?.type === 'top'" :style="{ overflow: 'hidden', maxHeight: entry.clip.maxHeight + 'px' }">
-              <MDCRenderer :body="{ type: 'root', children: [entry.ast] }" />
-            </div>
-            <!-- Clipped bottom continuation -->
-            <div v-else-if="entry.clip?.type === 'bottom'" :style="{ overflow: 'hidden', height: entry.clip.visibleHeight + 'px' }">
-              <div :style="{ marginTop: '-' + entry.clip.offset + 'px' }">
-                <MDCRenderer :body="{ type: 'root', children: [entry.ast] }" />
-              </div>
-            </div>
-            <!-- Normal unsplit entry -->
-            <MDCRenderer v-else :body="{ type: 'root', children: [entry.ast] }" />
-          </template>
+          <MDCRenderer
+            v-for="entry in page.entries"
+            :key="entry.key"
+            :body="{ type: 'root', children: [entry.ast] }"
+          />
         </article>
-        <div
-          v-if="pages.length > 1"
-          class="text-foreground/15 text-center mt-8 text-[12px] select-none"
-        >
-          第 {{ page.number }} 页 / 共 {{ pages.length }} 页
-        </div>
       </div>
 
       <!-- Empty state -->

@@ -1,22 +1,22 @@
-const html2canvasOptions = {
+const snapdomOptions = {
   scale: 2,
   backgroundColor: '#FFFFFF',
-  onclone: (clonedDoc: Document) => {
-    clonedDoc.querySelectorAll('link[rel="stylesheet"]').forEach((el) => {
-      const href = el.getAttribute('href') || ''
-      if (href.includes('fonts.googleapis.com') || href.includes('fonts.gstatic.com')) {
-        el.remove()
-      }
-    })
-  },
+  embedFonts: true,
 }
 
 async function capturePage(el: HTMLElement): Promise<HTMLCanvasElement | null> {
   try {
-    const { default: html2canvas } = await import('html2canvas')
-    return await html2canvas(el, html2canvasOptions)
+    const { snapdom } = await import('@zumer/snapdom')
+    const img = await snapdom.toPng(el, snapdomOptions)
+    const canvas = document.createElement('canvas')
+    canvas.width = img.naturalWidth
+    canvas.height = img.naturalHeight
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return null
+    ctx.drawImage(img, 0, 0)
+    return canvas
   } catch (err) {
-    console.error('html2canvas capture failed:', err)
+    console.error('snapdom capture failed:', err)
     return null
   }
 }
@@ -40,12 +40,10 @@ export const useExport = () => {
   }
 
   const downloadPDF = async (previewEl: HTMLElement): Promise<{ success: boolean; error?: string }> => {
-    // Hide measurement containers
     const measures = previewEl.querySelectorAll('.measure-container')
     measures.forEach((el) => (el as HTMLElement).style.display = 'none')
 
     try {
-      // Capture each already-paginated page from the editor preview
       const pageEls = previewEl.querySelectorAll('.resume-page') as NodeListOf<HTMLElement>
       if (pageEls.length === 0) {
         return { success: false, error: '未找到预览页面，请确保内容已渲染' }
@@ -60,7 +58,6 @@ export const useExport = () => {
         dataUrls.push(canvas.toDataURL('image/png'))
       }
 
-      // Build a self-contained print page with the captured page images
       const pageImages = dataUrls.map(url =>
         `<div class="page"><img src="${url}" alt="" /></div>`
       ).join('\n')
@@ -109,26 +106,34 @@ ${pageImages}
     }
   }
 
-  const downloadPNG = async (element: HTMLElement, filename: string): Promise<{ success: boolean; error?: string }> => {
-    const measures = element.querySelectorAll('.measure-container')
+  const downloadPNG = async (previewEl: HTMLElement): Promise<{ success: boolean; error?: string }> => {
+    const measures = previewEl.querySelectorAll('.measure-container')
     measures.forEach((el) => (el as HTMLElement).style.display = 'none')
 
     try {
-      const canvas = await capturePage(element)
-      if (!canvas) {
-        return { success: false, error: '截图失败，请重试' }
+      const pageEls = previewEl.querySelectorAll('.resume-page') as NodeListOf<HTMLElement>
+      if (pageEls.length === 0) {
+        return { success: false, error: '未找到预览页面，请确保内容已渲染' }
       }
 
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => {
-          if (blob) {
-            triggerDownload(blob, filename)
-            resolve({ success: true })
-          } else {
-            resolve({ success: false, error: '图片生成失败，可能存在跨域资源导致画布被污染' })
-          }
-        }, 'image/png')
-      })
+      for (let i = 0; i < pageEls.length; i++) {
+        const canvas = await capturePage(pageEls[i])
+        if (!canvas) {
+          return { success: false, error: '页面截图失败，请重试' }
+        }
+        const blob = await new Promise<Blob | null>((resolve) => {
+          canvas.toBlob((b) => resolve(b), 'image/png')
+        })
+        if (!blob) {
+          return { success: false, error: '图片生成失败，请重试' }
+        }
+        const name = pageEls.length > 1
+          ? `resume-${i + 1}.png`
+          : 'resume.png'
+        triggerDownload(blob, name)
+      }
+
+      return { success: true }
     } catch (err: any) {
       console.error('PNG export failed:', err)
       return { success: false, error: err.message || '导出失败，请重试' }

@@ -52,17 +52,11 @@ watch([measuring, pages], ([m, p]) => {
       class="print-page"
     >
       <article>
-        <template v-for="entry in page.entries" :key="entry.key">
-          <div v-if="entry.clip?.type === 'top'" :style="{ overflow: 'hidden', maxHeight: entry.clip.maxHeight + 'px' }">
-            <MDCRenderer :body="{ type: 'root', children: [entry.ast] }" />
-          </div>
-          <div v-else-if="entry.clip?.type === 'bottom'" :style="{ overflow: 'hidden', height: entry.clip.visibleHeight + 'px' }">
-            <div :style="{ marginTop: '-' + entry.clip.offset + 'px' }">
-              <MDCRenderer :body="{ type: 'root', children: [entry.ast] }" />
-            </div>
-          </div>
-          <MDCRenderer v-else :body="{ type: 'root', children: [entry.ast] }" />
-        </template>
+        <MDCRenderer
+          v-for="entry in page.entries"
+          :key="entry.key"
+          :body="{ type: 'root', children: [entry.ast] }"
+        />
       </article>
     </div>
 

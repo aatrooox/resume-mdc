@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import pkg from '../../package.json'
+const version = pkg.version
+
 const features = [
   { title: 'MDC 语法', desc: '基于 Markdown Components，简单灵活' },
   { title: '实时预览', desc: '左侧编辑，右侧即时渲染所见即所得' },
@@ -70,6 +73,7 @@ const scrollToTemplates = () => {
 
     <footer class="text-center text-[13px] text-foreground/30 pb-12">
       在线简历编辑器 · 让求职更简单
+      <div class="mt-1 text-[11px] text-foreground/15">v{{ version }}</div>
     </footer>
   </div>
 </template>

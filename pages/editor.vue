@@ -36,7 +36,7 @@ const handleExportPNG = async () => {
     toast('预览区域未就绪，请稍后再试', 'error')
     return
   }
-  const result = await downloadPNG(previewRef.value, 'resume.png')
+  const result = await downloadPNG(previewRef.value)
   if (result.success) {
     toast('PNG 导出成功', 'success')
   } else {
