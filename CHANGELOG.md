@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v0.0.5
+
+
+### 🩹 Fixes
+
+- Preview not rendering on page refresh due to ClientOnly hydration race (2c5037d)
+
+### ❤️ Contributors
+
+- Aatrox3 ([@aatrooox](https://github.com/aatrooox))
+
 ## v0.0.4
 
 
