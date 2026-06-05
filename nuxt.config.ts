@@ -1,3 +1,5 @@
+import pkg from './package.json'
+
 export default defineNuxtConfig({
   modules: ['@nuxtjs/mdc', '@nuxtjs/tailwindcss'],
 
@@ -51,6 +53,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     jwtSecret: process.env.NUXT_JWT_SECRET || '',
+    public: {
+      version: pkg.version,
+    },
   },
 
   devServer: {

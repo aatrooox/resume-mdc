@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import pkg from '../../package.json'
-const version = pkg.version
+const { public: { version } } = useRuntimeConfig()
 
 const features = [
   { title: 'MDC 语法', desc: '基于 Markdown Components，简单灵活' },
