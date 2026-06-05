@@ -74,6 +74,8 @@ export const useExport = () => {
   body { background: #fff; }
   .page {
     width: 794px;
+    height: 1123px;
+    background: #fff;
     overflow: hidden;
     page-break-after: always;
   }
